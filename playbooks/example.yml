@@ -1,0 +1,42 @@
+---
+- name: Get Device Facts
+  hosts: all
+  collections:
+    - juniper.device
+  connection: local
+  gather_facts: no
+
+  tasks:
+
+    - name: Enable NETCONF
+      connection: network_cli
+      junos_netconf:
+      when: ansible_network_os == 'junos'
+
+    - name: Retrieving information from devices running Junos OS
+      juniper_junos_facts:
+      when: ansible_network_os == 'junos'
+
+    - name: Gather facts asa
+      block:
+        - name: asa facts
+          asa_command:
+            commands:
+              - show int ip bri | inc Management0/0
+          register: asa_vars
+
+        - name: asa set facts
+          set_fact:
+            asa_mgmt_ip: "{{ asa_vars.stdout[0].split(' ') | ipaddr('address') }}"
+
+      when: ansible_network_os == 'asa'
+    
+    - name: Junos Facts
+      debug:
+        var: junos.version
+      when: ansible_network_os == 'junos'
+ 
+    - name: ASA Facts
+      debug:
+        msg: "{{ asa_mgmt_ip }}"
+      when: ansible_network_os == 'asa'
