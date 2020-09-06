@@ -6,7 +6,7 @@ services:
     ports:
       - "8200:8200"
     environment:
-      - VAULT_DEV_ROOT_TOKEN_ID=${VAULT_TOKEN}
+      - VAULT_DEV_ROOT_TOKEN_ID=${DEV_VAULT_TOKEN}
       - VAULT_DEV_LISTEN_ADDRESS=0.0.0.0:8200
 
   ansible:
@@ -14,5 +14,5 @@ services:
       context: ./ansible
       network: host
     environment:
-      - VAULT_TOKEN=${VAULT_TOKEN}
-      - VAULT_ADDR=${VAULT_ADDR}
+      - VAULT_TOKEN=${DEV_VAULT_TOKEN}
+      - VAULT_ADDR=${DEV_VAULT_ADDR}
