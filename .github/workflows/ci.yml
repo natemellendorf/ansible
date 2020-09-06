@@ -15,7 +15,7 @@ jobs:
   # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
-    container: mercutiodesign/docker-black
+    runs-on: ubuntu-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -23,5 +23,7 @@ jobs:
       - uses: actions/checkout@v2
 
       # Runs a single command using the runners shell
-      - name: Run Black linter
-        run: black --diff .
+      - name: Black Linter
+        uses: docker://mercutiodesign/docker-black
+        with:
+          args: black --diff .
