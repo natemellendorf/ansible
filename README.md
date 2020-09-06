@@ -56,7 +56,6 @@ pipenv shell
 # Install requirements
 pip install -r requirements.txt
 ansible-galaxy collection install juniper.device
-ansible-galaxy collection install cisco.asa
 
 # Make inventory.py executable
 chmod +x inventory.py

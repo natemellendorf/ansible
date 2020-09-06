@@ -49,7 +49,7 @@ class Inventory(object):
                 self.inventory = self.device_inventory(client=client, env=env)
 
         # Print the inventory for Ansible
-        print(json.dumps(self.inventory))
+        print(json.dumps(self.inventory, sort_keys=True, indent=4))
 
     # Example inventory for testing.
     def device_inventory(self, **kwargs):
