@@ -2,68 +2,75 @@
 lock="\360\237\224\222"
 pass="\342\234\205"
 fail="\342\235\214"
-
+info="\360\237\214\237"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
+success () {
+    echo "\n> ${pass} Success\n"
+}
+
+failure () {
+    echo "\n> ${fail} Failure\n"
+}
+
+info () {
+    echo "\n${bold}> ${info} $1 ${normal}"
+}
+
+vault () {
+    echo "\n${bold}> ${lock} Vault ${lock} - $1 ${normal}"
+}
 
 # Create Vault Secret
-echo "\n${bold}> ${lock} CREATE ENV DEV_VAULT_TOKEN ${normal}"
+info "CREATE ENV DEV_VAULT_TOKEN"
 if export DEV_VAULT_TOKEN="SuperInsecureP@ssw0rd" ; then
-    echo "\n> ${pass} Success\n"
+    success
 else
-    echo "\n> ${fail} Failure\n"
-    exit 1
+    failure
 fi
 
 # Create Vault Address
-echo "\n${bold}> ${lock} CREATE ENV DEV_VAULT_ADDR ${normal}"
+info "CREATE ENV DEV_VAULT_ADDR"
 if export DEV_VAULT_ADDR=http://127.0.0.1:8200 ; then
-    echo "\n> ${pass} Success\n"
+    success
 else
-    echo "\n> ${fail} Failure\n"
-    exit 1
+    failure
 fi
-
 
 # Build Dockerfiles
-echo "\n${bold}> ${lock} Build Images ${normal}"
-if docker-compose build > /dev/null ; then
-    echo "\n> ${pass} Success\n"
+info "BUILD IMAGES"
+if docker-compose build ; then
+    success
 else
-    echo "\n> ${fail} Failure\n"
-    exit 1
+    failure
 fi
 
-
 # Start containers
-echo "\n${bold}> ${lock} Start Containers ${normal}"
+info "START CONTAINERS"
 if docker-compose up -d > /dev/null ; then
-    echo "\n> ${pass} Success\n"
+    success
 else
-    echo "\n> ${fail} Failure\n"
-    exit 1
+    failure
 fi
 
 # Give Vault a moment to init
 sleep 5
 
 # Create Junos secret
-echo "\n${bold}> ${lock} Vault ${lock} - Create Junos Secret ${normal}"
-if docker exec -it ansible_vault_1 vault kv put secret/junos username=foo password=bar > /dev/null ; then
-    echo "\n> ${pass} Success\n"
+vault "Create Junos Secret"
+if docker exec -it ansible_vault_1 vault kv put secret/junos username=foo password=bar ; then
+    success
 else
-    echo "\n> ${fail} Failure\n"
-    exit 1
+    failure
 fi
 
 # Create ASA Secret
-echo "\n${bold}> ${lock} Vault ${lock} - Create ASA Secret ${normal}"
-if docker exec -it ansible_vault_1 vault kv put secret/cisco/asa username=foo password=bar enable=secret > /dev/null ; then
-    echo "\n> ${pass} Success\n"
+vault "Create ASA Secret"
+if docker exec -it ansible_vault_1 vault kv put secret/cisco/asa username=foo password=bar enable=secret ; then
+    success
 else
-    echo "\n> ${fail} Failure\n"
-    exit 1
+    failure
 fi
 
 echo "\n${bold}---->> COMPLETE <<----${normal}"
