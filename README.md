@@ -65,7 +65,7 @@ Using the [HashiCorp Python SDK](https://pypi.org/project/hvac/), it will retrie
 
 ```bash
 # Test your inventory
-ansible all -i inventory.py -m ping
+ansible all -m ping
 
 # Run an example playbook against all devices
 ansible-playbook playbooks/example.yml
