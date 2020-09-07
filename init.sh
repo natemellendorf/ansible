@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Replace as needed
+# [Replace as needed]
 # Secrets to access devices
 
 junos_username="user"
@@ -21,7 +21,7 @@ normal=$(tput sgr0)
 
 # Reusable echos
 success () {
-    echo -e "\n> ${pass} Success\n"
+    echo "\n> ${pass} Success\n"
 }
 
 failure () {
@@ -62,7 +62,7 @@ fi
 
 # Start containers
 info "START CONTAINERS"
-if docker-compose up -d > /dev/null ; then
+if docker-compose up -d vault > /dev/null ; then
     success
 else
     failure
@@ -97,19 +97,15 @@ fi
 echo "\n${bold}---->> READY <<----${normal}"
 
 # Create ASA Secret in vault
-info "Start Ansible container"
-if docker-compose run ansible ; then
-    success
-else
-    failure
-fi
+info "Start Ansible container\n> Type \"exit\" to stop container and clean up\n"
+docker-compose run ansible
 
 # Cleanup
 info "Clean up containers"
 if docker-compose down ; then
    success
 else
-  faulire
+   faulire
 fi
 
-echo "\n${bold}---->> COMPLETE <<----${normal}"
+echo "${bold}---->> COMPLETE <<----${normal}"

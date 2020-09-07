@@ -23,12 +23,7 @@ class Inventory(object):
 
         hcv_url = os.environ.get("VAULT_ADDR")
         hcv_token = os.environ.get("VAULT_TOKEN")
-        env = os.environ.get("VIRTUAL_ENV")
-
-        if env:
-            env = f"{env}/bin/python"
-        else:
-            env = "/usr/bin/python3"
+        env = (sys.executable)
 
         # Authenticate to HashiCorp Vault
         client = hvac.Client(url=hcv_url, token=hcv_token)

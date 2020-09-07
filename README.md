@@ -2,72 +2,73 @@
 
 ## Overview
 
-This repo is used for a personal lab.
-It leverages the following:
- - Ansible (Configuration Management)
- - HashiCorp Vault (Secrets Management)
+This project was created to manage/orchestrate a lab environment.  
+If you 
+
+## Tools
+
+This project leverages the following tools:
+ - [Ansible](https://www.ansible.com/)
+ - [HashiCorp Vault](https://www.vaultproject.io/)
+
+## Assumptions
+
+This project assumues the following are true:
+ - You have docker installed on your workstation
+ - For the first run of init.sh, you have internet access
+ - You have a lab environment with either Junos or Cisco ASAs deployed
+ - That you're comfortible editing a python script
 
 ## Getting Started
 
-Stage host environment variables
+To save time and to reduce steps, I've created an init script for this project.  
+To begin, simply run the init script with the steps below.  
 
 ```bash
-export VAULT_TOKEN="SuperInsecureP@ssw0rd"
-export VAULT_ADDR=http://127.0.0.1:8200
-```
-
-Launch a development Vault instance
-
-```Docker
-docker run --name vault \
---cap-add=IPC_LOCK \
--e 'VAULT_DEV_ROOT_TOKEN_ID=${VAULT_TOKEN}' \
--e 'VAULT_DEV_LISTEN_ADDRESS=0.0.0.0:8200' \
--p 8200:8200 \
--d vault
-```
-
-Download HashiCorp Vault CLI
-```wget
-https://www.vaultproject.io/downloads
-```
-
-Create default secrets
-
-```bash
-vault kv put secret/junos username=foo password=bar
-vault kv put secret/cisco/asa username=foo password=bar enable=secret
-```
-
-Stand up Ansible
-
-```python
-######
-# Note: Update inventory.py as needed
-######
-
-# Install pipenv to create a virtual env
+git clone https://github.com/natemellendorf/ansible.git
 cd ansible
-pip3 install pipenv
 
-# Launch virtual env
-pipenv shell
+# Edit ./init.sh, and update the [Replace as needed] section
+# Edit ./inventory/inventory.py, and update the hostvars as needed
 
-# Install requirements
-pip install -r requirements.txt
-ansible-galaxy collection install juniper.device
-
-# Make inventory.py executable
-chmod +x inventory.py
+chmod +x init.sh
+sh init.sh
 ```
 
-Test Ansible
+### What does init.sh do?
 
-```python
-# Test inventory
+This init script will perform the following tasks:
+ - Set temp environment variables for HashiCorp Vault
+ - Download the HashiCorp Vault container
+ - Build an Ansible container
+   - The container will use the files located in the ansible directoy
+ - Start the Vault container
+ - Exec into the Vault container, and create the secrets you set in init.sh
+ - Start the Ansible container
+   - At this point, you'll be free to run ansible commands
+ - When complete, remove the containers
+
+### How does [inventory.py](inventory/inventory.py) work?
+
+[Inventory.py](inventory/inventory.py) is a dynamic inventory script written in Python.  
+Currently, it's outputs are hard coded with an exception for device secrets.  
+Using the [HashiCorp Python SDK](https://pypi.org/project/hvac/), it will retrieve the secrets created by init.sh on each playbook run.
+
+## Testing
+
+```bash
+# Test your inventory
 ansible all -i inventory.py -m ping
 
-# Test playbook
+# Run an example playbook against all devices
 ansible-playbook playbooks/example.yml
 
 ```
+
+## To Do
+
+- Integrate [Vagrant](https://www.vagrantup.com/) to deploy a fleet of network devices with init.sh
+- Integrate NetBox, and rewrite [inventory.sh](inventory/inventory.py) to leverage its API for device inventory
+- Update [docker-compose.yml](docker-compose.yml) to deploy additional containers
+- Write additonal tests in GitHub actions
+- Go to the beach...
