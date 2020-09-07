@@ -29,8 +29,4 @@ RUN \
   ansible-galaxy collection install juniper.device && \
   chmod +x inventory/inventory.py
 
-# Set Vault secrets and env vars
-ENV VAULT_TOKEN=${DEV_VAULT_TOKEN}
-ENV VAULT_ADDR=${DEV_VAULT_ADDR}
-
 ENTRYPOINT ["/bin/ash"]

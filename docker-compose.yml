@@ -17,4 +17,4 @@ services:
       network: host
     environment:
       - VAULT_TOKEN=${DEV_VAULT_TOKEN}
-      - VAULT_ADDR=${DEV_VAULT_ADDR}
+      - VAULT_ADDR=http://vault:8200
