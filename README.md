@@ -19,6 +19,10 @@ This project assumues the following are true:
  - You have a lab environment with either Junos or Cisco ASAs deployed
  - That you're comfortible editing a python script
 
+## Demo
+
+![init.sh](demo/init.gif)
+
 ## Getting Started
 
 To save time and to reduce steps, I've created an init script for this project.  
