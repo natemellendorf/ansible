@@ -15,18 +15,17 @@ RUN \
   update-ca-certificates && \
   rm -rf /var/cache/apk/*
 
-#RUN \
-#  addgroup -S ansible && \
-#  adduser -S ansible -G ansible
-
-#USER ansible
-
-COPY ./ /home/ansible
-WORKDIR /home/ansible
+RUN \
+  pip install \
+  ansible \
+  jxmlease \
+  jsnapy \
+  ncclient \
+  junos-eznc \
+  hvac hvac[parser]
 
 RUN \
-  pip install -r requirements.txt && \
-  ansible-galaxy collection install juniper.device && \
-  chmod +x inventory/inventory.py
+  ansible-galaxy collection install \
+  juniper.device
 
 ENTRYPOINT ["/bin/ash"]
