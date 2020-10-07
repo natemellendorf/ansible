@@ -8,6 +8,7 @@ RUN \
   libxslt-dev \
   python3-dev \
   gcc \
+  sshpass \
   openssl-dev \
   musl-dev \
   libffi-dev \
@@ -22,10 +23,12 @@ RUN \
   jsnapy \
   ncclient \
   junos-eznc \
+  kubernetes \
   hvac hvac[parser]
 
 RUN \
   ansible-galaxy collection install \
-  juniper.device
+  juniper.device \
+  cisco.ios
 
 ENTRYPOINT ["/bin/ash"]
