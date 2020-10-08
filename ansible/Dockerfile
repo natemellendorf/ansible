@@ -9,6 +9,7 @@ RUN \
   python3-dev \
   gcc \
   sshpass \
+  openssh \
   openssl-dev \
   musl-dev \
   libffi-dev \
