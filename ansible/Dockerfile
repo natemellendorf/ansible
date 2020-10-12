@@ -20,6 +20,7 @@ RUN \
 RUN \
   pip install \
   ansible \
+  ansible-lint \
   jxmlease \
   jsnapy \
   ncclient \
